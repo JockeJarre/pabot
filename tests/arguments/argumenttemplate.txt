@@ -1,0 +1,2 @@
+--variable reportname:${reportname}
+--variable othervalue:${othervalue}
