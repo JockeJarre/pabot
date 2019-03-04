@@ -76,7 +76,6 @@ import time
 import datetime
 import multiprocessing
 import uuid
-import tempfile
 import string
 import csv
 from glob import glob
@@ -984,14 +983,17 @@ def _check_argumentdata(outs_dir, datasources, options, pabot_args):
         with open(pabot_args['argumenttemplate'],'r') as template_file:
             argument_template = string.Template(template_file.read())
 
+        outs_dir = os.path.join(outs_dir, 'arguments')
+        os.makedirs(outs_dir)
+
         argumentfiles = pabot_args['argumentfiles']
-        arguments_dir = tempfile.mkdtemp(prefix='arguments_', dir=os.curdir)
+        templatebase,templateext = pabot_args['argumenttemplate'].rsplit('.',1) 
         with open(pabot_args['argumentdata'], "rb") as data_file:
             dialect = csv.Sniffer().sniff(data_file.read(1024))
             data_file.seek(0)
             argument_data = csv.DictReader(data_file, dialect=dialect)
             for argcount, row in enumerate(argument_data, start=1):
-                filename = "%s/%s%s"% (arguments_dir, pabot_args['argumenttemplate'], argcount) 
+                filename = os.path.join(outs_dir,"%s%s.%s"%(templatebase, argcount,templateext) )
                 with open(filename, "w") as argument_file:
                     argument_file.write(argument_template.safe_substitute(row))
                 argumentfiles += [(str(argcount), filename)]
