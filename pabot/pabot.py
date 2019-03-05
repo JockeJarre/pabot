@@ -976,8 +976,8 @@ def _run_tutorial():
 
 
 def _check_argumentdata(outs_dir, datasources, options, pabot_args):
-    if pabot_args['argumenttemplate'] or pabot_args['argumenttemplate']:
-        if not pabot_args['argumenttemplate'] and pabot_args['argumentdata']:
+    if pabot_args['argumenttemplate'] or pabot_args['argumentdata']:
+        if not (pabot_args['argumenttemplate'] and pabot_args['argumentdata']):
             raise Exception("parameter argumenttemplate and argumentdata only work in pair")
 
         with open(pabot_args['argumenttemplate'],'r') as template_file:
@@ -995,7 +995,7 @@ def _check_argumentdata(outs_dir, datasources, options, pabot_args):
             for argcount, row in enumerate(argument_data, start=1):
                 filename = os.path.join(outs_dir,"%s%s.%s"%(templatebase, argcount,templateext) )
                 with open(filename, "w") as argument_file:
-                    argument_file.write(argument_template.safe_substitute(row))
+                    argument_file.write(argument_template.substitute(row))
                 argumentfiles += [(str(argcount), filename)]
 
 
