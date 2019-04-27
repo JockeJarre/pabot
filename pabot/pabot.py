@@ -987,8 +987,12 @@ def _check_argumentdata(outs_dir, datasources, options, pabot_args):
         os.makedirs(outs_dir)
 
         argumentfiles = pabot_args['argumentfiles']
-        templatebase,templateext = pabot_args['argumenttemplate'].rsplit('.',1) 
-        with open(pabot_args['argumentdata'], "rb") as data_file:
+        templatebase,templateext = pabot_args['argumenttemplate'].rsplit('.',1)
+        
+        import io
+        openfile = io.open if PY2 else open
+
+        with openfile(pabot_args['argumentdata'], newline='') as data_file:
             dialect = csv.Sniffer().sniff(data_file.read(1024))
             data_file.seek(0)
             argument_data = csv.DictReader(data_file, dialect=dialect)
